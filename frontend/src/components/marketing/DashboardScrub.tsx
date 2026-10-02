@@ -153,7 +153,7 @@ function ScrubDashboard() {
         <span className="hidden items-center gap-1 text-[10px] text-white/35 sm:inline-flex"><Command className="size-3" /> K</span>
       </div>
 
-      <div className="relative grid min-h-[360px] grid-cols-1 sm:min-h-[420px] sm:grid-cols-[148px_minmax(0,1fr)] md:min-h-[460px] md:grid-cols-[180px_minmax(0,1fr)]">
+      <div className="relative grid min-h-[360px] grid-cols-1 sm:min-h-[380px] sm:grid-cols-[148px_minmax(0,1fr)] md:min-h-[420px] md:grid-cols-[180px_minmax(0,1fr)]">
         <aside data-scrub-sidebar data-scrub-animated className="hidden border-r border-white/[0.07] bg-[#101015] p-4 sm:block">
           <div className="flex items-center gap-2.5 px-1 pb-6 pt-1">
             <span className="grid size-7 place-items-center rounded-lg bg-violet-400/15 text-violet-300">
@@ -246,13 +246,13 @@ function ScrubDashboard() {
             className="absolute inset-0 min-h-0 border-0 bg-transparent"
             skeletonClassName="rounded-none border-0 bg-[#0d0d11]"
             skeleton={(
-              <div className="h-full min-h-[360px] p-5 sm:min-h-[420px] sm:p-7 md:min-h-[460px]" aria-hidden="true">
+              <div className="h-full min-h-[360px] p-5 sm:min-h-[380px] sm:p-7 md:min-h-[420px]" aria-hidden="true">
                 <div className="h-3 w-24 rounded bg-white/[0.07]" />
                 <div className="mt-3 h-5 w-48 rounded bg-white/[0.08]" />
                 <div className="mt-6 grid grid-cols-3 gap-3">
                   {[0, 1, 2].map((item) => <div key={item} className="h-[92px] rounded-xl border border-white/[0.05] bg-white/[0.035]" />)}
                 </div>
-                <div className="mt-3 h-[174px] rounded-xl border border-white/[0.05] bg-white/[0.035]" />
+                <div className="mt-3 h-[150px] rounded-xl border border-white/[0.05] bg-white/[0.035]" />
               </div>
             )}
           />
@@ -273,8 +273,8 @@ function ScrubDashboard() {
 
 export function DashboardScrub() {
   return (
-    <section data-dashboard-scrub-section className="relative flex min-h-[100svh] flex-col justify-center px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto mb-8 w-full max-w-6xl md:mb-10">
+    <section data-dashboard-scrub-section className="relative flex min-h-[100svh] flex-col justify-center px-4 pt-24 pb-10 sm:px-6 lg:px-8">
+      <div className="mx-auto mb-6 w-full max-w-6xl md:mb-8">
         <SectionHeading
           eyebrow="From signal to action"
           title="See the whole measurement loop."

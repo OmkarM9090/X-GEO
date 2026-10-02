@@ -163,11 +163,11 @@ function DashboardMockup() {
 
 export function Hero() {
   const headlineRef = useSplitText<HTMLHeadingElement>({
-    kind: "words",
+    kind: "lines",
     scroll: false,
     blur: true,
     delay: 0.15,
-    stagger: 0.07,
+    stagger: 0.15,
   });
   const lenis = useLenis();
   const fadeRef = useRef<HTMLDivElement>(null);
@@ -221,7 +221,8 @@ export function Hero() {
         </div>
 
         <h1 ref={headlineRef} className="mt-8 font-heading text-hero text-foreground">
-          Stop guessing if AI cites your brand. <GradientText>Measure it with confidence.</GradientText>
+          Stop guessing if AI cites your brand.<br className="hidden sm:block" />{" "}
+          <GradientText>Measure it with confidence.</GradientText>
         </h1>
 
         <p

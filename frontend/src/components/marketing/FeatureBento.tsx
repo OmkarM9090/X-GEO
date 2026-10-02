@@ -272,6 +272,20 @@ export function FeatureBento() {
           );
         });
 
+        // Minimal divider animation
+        const lineFill = scope.querySelector<HTMLElement>("[data-animated-line]");
+        if (lineFill) {
+          gsap.set(lineFill, { x: "-100%" });
+          tweens.push(
+            gsap.to(lineFill, {
+              x: "100%",
+              duration: 1.5,
+              ease: "power2.inOut",
+              scrollTrigger: { trigger: lineFill, start: "top 88%", once: true },
+            })
+          );
+        }
+
         return () => tweens.forEach((t) => {
           t.scrollTrigger?.kill();
           t.kill();
@@ -289,15 +303,20 @@ export function FeatureBento() {
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-accent">
             Platform
           </p>
-          <h2 ref={headlineRef} className="mt-4 font-heading text-display text-foreground">
+          <h2 ref={headlineRef} className="mt-2 font-heading text-display text-foreground">
             Everything you need to win AI search.
           </h2>
-          <p className="mt-5 text-body-lg text-muted-foreground">
+          <p className="mt-3 text-body-lg text-muted-foreground">
             Measurement, verification, and repair — one loop, closed every week.
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Minimal Animated Divider */}
+        <div className="mx-auto mt-6 mb-4 h-[1px] w-full max-w-[120px] overflow-hidden bg-border/40" aria-hidden="true">
+          <div data-animated-line className="h-full w-full -translate-x-full bg-accent shadow-[0_0_12px_rgba(167,139,250,0.8)]" />
+        </div>
+
+        <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-3">
           <TileShell
             wide
             title="Monte Carlo CPI tracking"

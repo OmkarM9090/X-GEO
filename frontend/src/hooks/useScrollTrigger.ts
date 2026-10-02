@@ -38,16 +38,23 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(options: Revea
       const mm = gsap.matchMedia();
       mm.add(MOTION_OK, () => {
         gsap.set(targets, { willChange: "transform, opacity" });
-        gsap.from(targets, {
-          y,
-          opacity: 0,
-          ...(scale !== undefined ? { scale } : {}),
-          duration,
-          stagger,
-          ease: "power3.out",
-          clearProps: "willChange",
-          scrollTrigger: { trigger: root, start, once: true },
-        });
+        gsap.fromTo(targets, 
+          {
+            y,
+            opacity: 0,
+            ...(scale !== undefined ? { scale } : {}),
+          },
+          {
+            y: 0,
+            opacity: 1,
+            ...(scale !== undefined ? { scale: 1 } : {}),
+            duration,
+            stagger,
+            ease: "power3.out",
+            clearProps: "willChange,transform,opacity",
+            scrollTrigger: { trigger: root, start, once: true },
+          }
+        );
       });
       return () => mm.revert();
     },
