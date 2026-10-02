@@ -13,45 +13,78 @@ function shouldShowPreloader(): boolean {
   }
 }
 
-/** First-load-only brand card; the complete timeline is capped below 1.8 seconds. */
+/** Ultra-premium cinematic preloader with staggered columns. */
 export function Preloader() {
   const [visible, setVisible] = useState(shouldShowPreloader);
   const rootRef = useRef<HTMLDivElement>(null);
-  const wordmarkRef = useRef<HTMLSpanElement>(null);
-  const progressRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (!visible) return;
     try {
       window.sessionStorage.setItem(SESSION_KEY, "1");
     } catch {
-      // The preloader still completes when storage is disabled.
+      // Ignore storage errors
     }
   }, [visible]);
 
   useGSAP(
     () => {
       const root = rootRef.current;
-      const wordmark = wordmarkRef.current;
-      const progress = progressRef.current;
-      if (!visible || !root || !wordmark || !progress) return undefined;
+      if (!visible || !root) return undefined;
 
       const media = gsap.matchMedia();
       media.add(MOTION_OK, () => {
-        gsap.set(progress, { scaleX: 0, transformOrigin: "left center", willChange: "transform, opacity" });
+        const cols = root.querySelectorAll("[data-col]");
+        const letters = root.querySelectorAll("[data-letter]");
+        const glow = root.querySelector("[data-glow]");
+        const subtext = root.querySelector("[data-subtext]");
+        
+        // Initial state
+        gsap.set(letters, { yPercent: 120, rotation: 10, opacity: 0, transformOrigin: "bottom left" });
+        gsap.set(subtext, { yPercent: 100, opacity: 0 });
+        gsap.set(glow, { opacity: 0, scale: 0.5 });
+        
         const timeline = gsap.timeline({
           onComplete: () => setVisible(false),
         });
+
         timeline
-          .fromTo(wordmark, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" })
-          .to(progress, { scaleX: 1, duration: 1.15, ease: "power2.inOut" }, 0.12)
-          .to(root, { yPercent: -100, duration: 0.35, ease: "power4.inOut" }, 1.35);
+          // 1. Cinematic staggered letters reveal
+          .to(letters, { 
+            yPercent: 0, 
+            rotation: 0, 
+            opacity: 1, 
+            duration: 0.85, 
+            stagger: 0.08, 
+            ease: "back.out(1.2)" 
+          })
+          // 2. Pulse glow and reveal subtext
+          .to(glow, { opacity: 1, scale: 1.3, duration: 1, ease: "power2.out" }, "-=0.6")
+          .to(subtext, { yPercent: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, "-=0.5")
+          
+          // 3. Hover pause so the user absorbs the brand
+          .to({}, { duration: 0.4 })
+          
+          // 4. Smoothly pull everything out
+          .to(letters, { yPercent: -80, opacity: 0, duration: 0.5, stagger: 0.04, ease: "power2.in" })
+          .to(subtext, { yPercent: -50, opacity: 0, duration: 0.4, ease: "power2.in" }, "<")
+          .to(glow, { opacity: 0, scale: 2, duration: 0.5 }, "<")
+          
+          // 5. Staggered column wipe up to reveal the actual website!
+          .to(cols, { 
+            yPercent: -100, 
+            duration: 0.9, 
+            stagger: 0.07, 
+            ease: "power4.inOut" 
+          }, "-=0.3");
 
         return () => timeline.kill();
       });
+
       media.add("(prefers-reduced-motion: reduce)", () => {
         setVisible(false);
       });
+
       return () => media.revert();
     },
     { scope: rootRef, dependencies: [visible], revertOnUpdate: true },
@@ -59,22 +92,48 @@ export function Preloader() {
 
   if (!visible) return null;
 
+  const word = "X-GEO".split("");
+
   return (
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[10000] grid place-items-center bg-[#0A0A0B] text-white"
+      className="fixed inset-0 z-[10000] overflow-hidden"
       role="status"
       aria-label="Loading X-GEO"
     >
-      <span
-        ref={wordmarkRef}
-        className="font-heading text-2xl font-semibold tracking-[0.22em] text-white"
-      >
-        X-GEO
-      </span>
-      <span className="absolute inset-x-0 bottom-0 h-[2px] overflow-hidden bg-white/10">
-        <span ref={progressRef} className="block h-full origin-left bg-gradient-to-r from-violet-400 to-violet-200" />
-      </span>
+      {/* 5 Staggered Columns covering the screen */}
+      <div className="absolute inset-0 flex">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} data-col className="h-full flex-1 bg-[#0A0A0B] border-r border-white/[0.02]" />
+        ))}
+      </div>
+
+      {/* Centered Cinematic Content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="relative flex items-center justify-center">
+          <div data-glow className="absolute inset-0 rounded-full bg-accent/30 blur-[50px]" />
+          
+          <div className="flex overflow-hidden px-4 pb-2 pt-6">
+            {word.map((char, index) => (
+              <span
+                key={index}
+                data-letter
+                className={`font-heading text-6xl font-bold tracking-tight md:text-8xl drop-shadow-xl ${
+                  char === "X" ? "text-accent" : "text-white"
+                }`}
+              >
+                {char}
+              </span>
+            ))}
+          </div>
+        </div>
+        
+        <div className="mt-1 overflow-hidden">
+          <div data-subtext className="font-mono text-[10px] tracking-[0.4em] text-white/50 sm:text-xs">
+            AI SEARCH CITATIONS
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
