@@ -1,0 +1,83 @@
+/* ============================================================
+   X-GEO Design Tokens — dual theme CSS variables (HSL channels)
+   Light mode = :root · Dark mode (default) = .dark
+   ============================================================ */
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --border: 240 5.9% 90%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+
+  /* Brand */
+  --accent: 262 83% 58%;
+  --accent-foreground: 0 0% 100%;
+  --accent-glow: 262 83% 70%;
+
+  /* Semantic */
+  --success: 142 71% 45%;
+  --warning: 38 92% 50%;
+  --danger: 0 72% 51%;
+
+  /* Shape */
+  --radius: 0.5rem;
+
+  /* Chart series */
+  --chart-1: 262 83% 58%;
+  --chart-2: 142 71% 45%;
+  --chart-3: 38 92% 50%;
+
+  color-scheme: light;
+}
+
+.dark {
+  --background: 240 10% 3.9%;        /* #0A0A0B */
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --border: 240 3.7% 15.9%;
+  --card: 240 10% 5.9%;
+  --card-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+
+  --accent: 262 83% 65%;
+  --accent-foreground: 262 83% 8%;
+  --accent-glow: 262 100% 75%;
+
+  --success: 142 69% 52%;
+  --warning: 38 92% 55%;
+  --danger: 0 72% 58%;
+
+  --chart-1: 262 83% 65%;
+  --chart-2: 142 69% 52%;
+  --chart-3: 38 92% 55%;
+
+  color-scheme: dark;
+}
+
+/* Interface refinements shared across marketing, auth, and the workspace. */
+:root {
+  --surface-raised: 0 0% 100%;
+  --surface-overlay: 0 0% 100%;
+  --input: var(--border);
+  --ring: var(--accent);
+  --chart-4: 199 89% 48%;
+  --chart-5: 340 82% 52%;
+  --nav-height: 4rem;
+  --content-width: 80rem;
+  --font-ui: "Geist Local", "Geist", "Inter", system-ui, sans-serif;
+  --font-code: "Geist Mono Local", "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+}
+
+.dark {
+  --surface-raised: 240 7% 7.5%;
+  --surface-overlay: 240 10% 3.9%;
+  --chart-4: 199 89% 64%;
+  --chart-5: 340 82% 66%;
+}

@@ -1,50 +1,37 @@
-# X-GEO — Frontend (Phase 1)
+# X-GEO
 
-Explainable Generative Engine Optimization & Verification Suite. Phase 1 ships the complete,
-production-grade frontend scaffolding: marketing site, authentication, dashboard shell, and a
-dual-theme design system. All data is mocked via typed fixtures in `src/lib/mock-data.ts`.
+Explainable Generative Engine Optimization and Verification Suite. The repository is organized as a frontend-first workspace; the API service is planned for Step 2B.
+
+## Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+npm run typecheck
+npm run build
+```
+
+The Vite dev server binds to `0.0.0.0` for Arena previews. Production output is generated in `frontend/dist/`.
 
 ## Stack
 
-| Area | Choice |
-| --- | --- |
-| Framework | Vite + React 19 + TypeScript (strict) |
-| Styling | Tailwind CSS (v4 engine via `@tailwindcss/vite`) + CSS variable tokens in `src/styles/tokens.css`, mapped through `tailwind.config.ts` |
-| UI primitives | shadcn-style components (Radix primitives, hand-built in `src/components/ui`) |
-| Animation | GSAP 3.13 (`ScrollTrigger`, `SplitText`, `Flip`) + `@gsap/react` |
-| Smooth scroll | Lenis, wired into the GSAP ticker |
-| State | Zustand (theme, UI) + TanStack Query (prepared for Phase 2 API) |
-| Routing | React Router v6 |
-| Forms | React Hook Form + Zod |
-| Charts | Recharts + bespoke animated SVG |
-| Fonts | Geist (headings/UI), Inter (body), Geist Mono (code/metrics) |
-
-## Getting started
-
-```bash
-pnpm install
-pnpm dev        # local dev server
-pnpm build      # production build → dist/
-pnpm preview    # serve the production build
-```
+- React 19, TypeScript, Vite, React Router v6
+- Tailwind CSS v4 with shared CSS-variable design tokens
+- GSAP 3 + `@gsap/react` + ScrollTrigger / SplitText
+- Lenis smooth scrolling, disabled for touch-first and reduced-motion preferences
+- TanStack Query, Zustand, React Hook Form + Zod
+- Recharts and typed mock fixtures
+- Locally hosted Geist Variable and Geist Mono fonts (OFL license in `frontend/public/fonts/`)
 
 ## Routes
 
-- `/` landing (11 animated sections incl. scroll-scrubbed Monte Carlo CPI demo)
-- `/features`, `/pricing`, `/docs`
-- `/signin`, `/signup`, `/forgot-password` (RHF + Zod, mocked 1.5 s submits)
-- `/dashboard` → overview (animated metrics, audits table, trend chart, empty-state toggle),
-  `/dashboard/projects`, `/dashboard/audits`, `/dashboard/optimizations`,
-  `/dashboard/reports`, `/dashboard/settings` (shells with Phase 2 badges)
+- `/`, `/features`, `/pricing`, `/changelog`, `/docs`
+- `/signin`, `/signup`, `/forgot-password`
+- `/dashboard`, `/dashboard/projects`, `/dashboard/audits`, `/dashboard/optimizations`, `/dashboard/reports`, `/dashboard/settings`
 
-## Conventions
+## Architecture
 
-- **Theming** — dark mode is the default; preference persists under `localStorage["xgeo-theme"]`
-  and is applied pre-paint by an inline script in `index.html`. All colors are HSL channel
-  variables consumed as `hsl(var(--token) / <alpha-value>)`.
-- **Animation** — every GSAP effect is wrapped in `gsap.matchMedia()` and gated on
-  `(prefers-reduced-motion: no-preference)`; reduced-motion users always see the final state.
-  Layout properties are never animated (transform/opacity only).
-- **Mock data** — typed fixtures live in `src/lib/mock-data.ts`; swap with TanStack Query
-  hooks in Phase 2 without touching components.
-- **Import alias** — `@/` maps to `src/`.
+Application bootstrap and providers live under `frontend/src/app/`; route pages are separated by marketing, auth, and dashboard domains. Reusable UI primitives, product components, shared components, and GSAP animation building blocks have dedicated folders. Typed fixtures are in `frontend/src/data/`, domain types in `frontend/src/types/`, and API helpers in `frontend/src/lib/api.ts`.
+
+All GSAP motion is scoped with `useGSAP`, cleaned up on unmount, and guarded by `prefers-reduced-motion`. Route changes refresh ScrollTrigger instances; window resize refreshes are debounced.

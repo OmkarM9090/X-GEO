@@ -1,0 +1,19 @@
+# Dependencies and build output
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Local environment files
+.env
+.env.*
+!frontend/.env.example
+
+# Logs and OS/editor noise
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# TypeScript build info
+*.tsbuildinfo
