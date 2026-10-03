@@ -59,17 +59,26 @@ def _is_list_annotation(annotation: Any) -> bool:
 
 
 class _FlexibleListSourceMixin:
-    """Allow comma separated values for list-typed settings."""
+    """Allow comma separated values for list-typed settings.
+
+    ``value_is_complex`` cannot be relied on: pydantic-settings only sets it when
+    a custom ``env_parse_*`` hook is configured, so a plain ``list[str]`` field
+    arrives here with ``False`` and the base implementation then tries to JSON
+    decode ``"a,b"``. Detecting the annotation instead keeps
+    ``ALLOWED_ORIGINS=http://a,http://b`` working while still accepting JSON
+    lists (``["http://a"]``) and bare scalars.
+    """
 
     def prepare_field_value(
         self, field_name: str, field: FieldInfo | None, value: Any, value_is_complex: bool
     ) -> Any:
-        if value_is_complex and isinstance(value, str):
-            annotation = getattr(field, "annotation", None)
-            if _is_list_annotation(annotation):
-                stripped = value.strip()
-                if stripped and not stripped.startswith("["):
-                    return [item.strip() for item in stripped.split(",") if item.strip()]
+        annotation = getattr(field, "annotation", None)
+        if isinstance(value, str) and _is_list_annotation(annotation):
+            stripped = value.strip()
+            if not stripped:
+                return []
+            if not stripped.lstrip().startswith("["):
+                return [item.strip() for item in stripped.split(",") if item.strip()]
         return super().prepare_field_value(field_name, field, value, value_is_complex)  # type: ignore[misc]
 
 
