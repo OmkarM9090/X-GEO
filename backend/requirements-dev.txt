@@ -1,0 +1,22 @@
+# =============================================================================
+# X-GEO backend — development + CI tooling
+# Install with: pip install -r requirements-dev.txt
+# The Docker image installs this file when built with INSTALL_DEV=true.
+# =============================================================================
+-r requirements.txt
+
+# --- Formatting / linting / typing -----------------------------------------
+ruff==0.6.9
+black==24.10.0
+isort==5.13.2
+mypy==1.11.2
+
+# --- Testing ----------------------------------------------------------------
+pytest==8.3.0
+pytest-asyncio==0.24.0
+pytest-cov==5.0.0
+factory-boy==3.3.0
+
+# --- Local development without Docker --------------------------------------
+# Bundles PostgreSQL 16 + pgvector binaries; see scripts/dev_db.py
+pgserver==0.1.4

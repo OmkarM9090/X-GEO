@@ -1,0 +1,116 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "x-geo-backend"
+version = "0.1.0"
+description = "X-GEO — Explainable Generative Engine Optimization API"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "X-GEO" }]
+# Runtime dependencies are pinned in requirements.txt (single source of truth
+# for pip, Docker and CI); setuptools reads them dynamically to avoid drift.
+dynamic = ["dependencies"]
+
+[project.optional-dependencies]
+# Docker-free local development (bundled PostgreSQL 16 + pgvector binaries).
+local-db = ["pgserver==0.1.4"]
+
+[tool.setuptools]
+packages = ["app"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "unit: fast, dependency-free tests",
+    "integration: tests that require the database",
+    "e2e: full pipeline tests that spin up an HTTP fixture server",
+]
+filterwarnings = [
+    "error::DeprecationWarning:app.*",
+    "ignore::DeprecationWarning:celery.*",
+    "ignore::DeprecationWarning:kombu.*",
+    "ignore::ResourceWarning",
+]
+log_cli = false
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = ["app/main.py", "*/migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+
+# ---------------------------------------------------------------------------
+# Ruff
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["migrations/versions", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "TID", "RET", "ARG", "PTH", "RUF"]
+ignore = [
+    "E501",   # line length handled by black
+    "B008",   # FastAPI dependency defaults are idiomatic
+    "RUF012", # mutable class attrs are fine for SQLAlchemy/Scrapy
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ARG001", "ARG002", "S101"]
+"app/crawler/settings.py" = ["N816"]
+# Framework hooks whose signatures are fixed by the framework, not by us.
+"migrations/env.py" = ["ARG001"]  # Alembic `include_object` hook
+"app/config.py" = ["ARG003"]  # pydantic-settings `settings_customise_sources`
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "tests"]
+
+# ---------------------------------------------------------------------------
+# Black / isort
+# ---------------------------------------------------------------------------
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+known_first_party = ["app", "tests"]
+
+# ---------------------------------------------------------------------------
+# mypy
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = false
+warn_redundant_casts = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+exclude = ["migrations/", "tests/"]
+
+[[tool.mypy.overrides]]
+module = ["scrapy.*", "twisted.*", "pgvector.*", "html2text.*", "celery.*", "structlog.*"]
+ignore_missing_imports = true

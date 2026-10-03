@@ -1,0 +1,52 @@
+# =============================================================================
+# X-GEO backend — pinned runtime dependencies (Python 3.11)
+# =============================================================================
+
+# --- Core web framework -----------------------------------------------------
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+pydantic==2.9.0
+pydantic-settings==2.5.0
+email-validator==2.2.0
+python-multipart==0.0.9
+
+# --- Database ---------------------------------------------------------------
+sqlalchemy[asyncio]==2.0.35
+# greenlet is pinned transitively: playwright==1.47.0 requires greenlet==3.0.3,
+# which satisfies SQLAlchemy's asyncio extra (greenlet!=0.4.17).
+asyncpg==0.29.0
+alembic==1.13.0
+pgvector==0.3.5
+
+# --- Task queue -------------------------------------------------------------
+celery[redis]==5.4.0
+redis==5.0.0
+
+# --- Crawler ----------------------------------------------------------------
+scrapy==2.11.0
+# Transitive pins required by scrapy==2.11.0 (newer releases dropped APIs it
+# imports at module load: w3lib._safe_chars and protego.RequestRate).
+w3lib==2.1.2
+protego==0.3.1
+playwright==1.47.0
+lxml==5.3.0
+beautifulsoup4==4.12.0
+html2text==2024.2.26
+
+# --- Auth / HTTP ------------------------------------------------------------
+PyJWT==2.9.0
+# Required by PyJWT for RS*/ES* (JWKS) signature verification; Supabase projects
+# created after 2024 sign access tokens with ES256 by default.
+cryptography==43.0.1
+httpx==0.27.0
+
+# --- Observability ----------------------------------------------------------
+structlog==24.4.0
+
+# --- Testing ----------------------------------------------------------------
+pytest==8.3.0
+pytest-asyncio==0.24.0
+pytest-cov==5.0.0
+factory-boy==3.3.0
+faker==30.3.0
+tldextract==5.3.2
