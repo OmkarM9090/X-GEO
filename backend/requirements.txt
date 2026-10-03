@@ -35,6 +35,9 @@ html2text==2024.2.26
 
 # --- Auth / HTTP ------------------------------------------------------------
 PyJWT==2.9.0
+# Required by PyJWT for RS*/ES* (JWKS) signature verification; Supabase projects
+# created after 2024 sign access tokens with ES256 by default.
+cryptography==43.0.1
 httpx==0.27.0
 
 # --- Observability ----------------------------------------------------------
